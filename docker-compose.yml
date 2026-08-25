@@ -3,16 +3,31 @@ services:
     build: .
     restart: always
     ports:
-      - "80:8003"
+      - "8000:8003"
     depends_on:
-      - db
+      db:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: postgresql://app_user:app_pass@db:5432/app_db
+
   db:
-    image: mysql:8.0
+    image: postgres:16
+    container_name: postgres_db
     restart: always
     environment:
-      MYSQL_ROOT_PASSWORD: my-secret-pw
-    command: mysqld
+      POSTGRES_DB: app_db
+      POSTGRES_USER: app_user
+      POSTGRES_PASSWORD: app_pass
+    ports:
+      - "5433:5432"
     volumes:
-      - mysql-data:/var/lib/mysql
+      - pgdata:/var/lib/postgresql/data
+      - ./init:/docker-entrypoint-initdb.d
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U app_user -d app_db"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
 volumes:
-  mysql-data:
+  pgdata:

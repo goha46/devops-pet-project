@@ -1,0 +1,44 @@
+stages:
+  - lint
+  - test
+  - build
+
+lint:
+  stage: lint
+  image: python:3.13
+  before_script:
+    - pip install -r requirements.txt -r requirements-dev.txt
+  script:
+    - ruff check .
+    - ruff format --check .
+
+test:
+  stage: test
+  image: python:3.13
+  services:
+    - name: postgres:16
+      alias: postgres
+  variables: 
+    POSTGRES_DB: app_test
+    POSTGRES_USER: app_user
+    POSTGRES_PASSWORD: app_pass
+    TEST_DATABASE_URL: postgresql://app_user:app_pass@postgres:5432/app_test
+  before_script:
+    - pip install -r requirements.txt -r requirements-dev.txt
+  script:
+    - pytest -v
+
+build:
+  stage: build
+  image: docker:27.4.1-cli
+  services:
+    - name: docker:27.4.1-dind
+      alias: docker
+  variables:
+    DOCKER_HOST: tcp://docker:2376
+    DOCKER_TLS_CERTDIR: "/certs"
+  before_script:
+    - echo "$CI_REGISTRY_PASSWORD" | docker login "$CI_REGISTRY" -u "$CI_REGISTRY_USER" --password-stdin
+  script:
+    - docker build --pull -t "$CI_REGISTRY_IMAGE:$CI_COMMIT_SHA" .
+    - docker push "$CI_REGISTRY_IMAGE:$CI_COMMIT_SHA"

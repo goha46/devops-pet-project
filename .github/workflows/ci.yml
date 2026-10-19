@@ -37,14 +37,14 @@ jobs:
           POSTGRES_PASSWORD: app_pass
           POSTGRES_DB: app_test
         ports:
-          - 5432:5432
+          - 5433:5432
         options: >-
           --health-cmd "pg_isready -U app_user -d app_test"
           --health-interval 5s
           --health-timeout 5s
           --health-retries 5
     env:
-      TEST_DATABASE_URL: postgresql://app_user:app_pass@localhost:5432/app_test
+      TEST_DATABASE_URL: postgresql://app_user:app_pass@localhost:5433/app_test
     steps:
       - name: Получить код
         uses: actions/checkout@v4
@@ -64,3 +64,34 @@ jobs:
 
       - name: Сборка Docker-образа
         run: docker build -t dev-ops-project .
+    
+  publish:
+    needs: [lint, test]
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    permissions:
+      contents: read
+      packages: write
+    steps:
+
+      - name: Получить код
+        uses: actions/checkout@v4
+      
+      - name: Настроить Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Войти в GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      
+      - name: Собрать и опубликовать образ
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          push: true
+          tags: ghcr.io/goha46/devops-pet-project:${{ github.sha }}
+      
+        

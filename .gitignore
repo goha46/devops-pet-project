@@ -15,12 +15,6 @@ dist/
 *.egg-info/
 .eggs/
 
-# Test / coverage
-.pytest_cache/
-.coverage
-.coverage.*
-htmlcov/
-
 # IDE / editor
 .vscode/
 .idea/
@@ -38,7 +32,9 @@ postgres-data/
 # OS
 Thumbs.db
 
-# Pytests
+# Test / coverage
 .pytest_cache/
 .ruff_cache/
-.venv/
+.coverage
+.coverage.*
+htmlcov/

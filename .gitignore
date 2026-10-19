@@ -37,3 +37,8 @@ postgres-data/
 
 # OS
 Thumbs.db
+
+# Pytests
+.pytest_cache/
+.ruff_cache/
+.venv/

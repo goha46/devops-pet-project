@@ -2,6 +2,7 @@ stages:
   - lint
   - test
   - build
+  - deploy
 
 lint:
   stage: lint
@@ -42,3 +43,18 @@ build:
   script:
     - docker build --pull -t "$CI_REGISTRY_IMAGE:$CI_COMMIT_SHA" .
     - docker push "$CI_REGISTRY_IMAGE:$CI_COMMIT_SHA"
+
+deploy:
+  stage: deploy
+  image: alpine:3.20
+  needs: [build]
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "main"'
+  before_script:
+    - apk add --no-cache openssh-client
+    - mkdir -p ~/.ssh
+    - cp "$SSH_KNOWN_HOSTS" ~/.ssh/known_hosts
+    - chmod 600 ~/.ssh/known_hosts
+    - chmod 400 "$SSH_PRIVATE_KEY"
+  script:
+    - ssh -o IdentitiesOnly=yes -i "$SSH_PRIVATE_KEY" goha46@178.154.235.69 'whoami'

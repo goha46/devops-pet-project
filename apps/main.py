@@ -6,6 +6,7 @@ from contextlib import asynccontextmanager
 from typing import Annotated
 
 from fastapi import FastAPI, HTTPException, Query
+from prometheus_fastapi_instrumentator import Instrumentator
 from sqlalchemy.orm import Session
 
 from apps.database import SessionLocal, init_db
@@ -39,6 +40,7 @@ async def lifespan(app: FastAPI):
 app = FastAPI(lifespan=lifespan)
 app.state.app_version = get_app_version()
 
+Instrumentator().instrument(app).expose(app)
 
 @app.get("/")
 async def read_root():

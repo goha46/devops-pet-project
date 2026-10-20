@@ -57,4 +57,12 @@ deploy:
     - chmod 600 ~/.ssh/known_hosts
     - chmod 400 "$SSH_PRIVATE_KEY"
   script:
-    - ssh -o IdentitiesOnly=yes -i "$SSH_PRIVATE_KEY" goha46@178.154.235.69 'whoami'
+    - |
+      ssh -o IdentitiesOnly=yes -i "$SSH_PRIVATE_KEY" goha46@178.154.235.69 "
+        set -e
+        cd /home/goha46
+        sed -i 's/^IMAGE_TAG=.*/IMAGE_TAG=$CI_COMMIT_SHA/' .env
+        sudo -n docker compose -f compose.deploy.yml pull app
+        sudo -n docker compose -f compose.deploy.yml up -d --wait
+        sudo -n docker compose -f compose.deploy.yml ps
+      "

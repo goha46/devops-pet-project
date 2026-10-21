@@ -58,6 +58,13 @@ deploy:
     - chmod 400 "$SSH_PRIVATE_KEY"
   script:
     - |
+      set -e
+      ssh -o IdentitiesOnly=yes -o StrictHostKeyChecking=yes -o HostKeyAlias=devops-pet-vm -i "$SSH_PRIVATE_KEY" goha46@"$DEPLOY_HOST" \
+        "mkdir -p /home/goha46/monitoring"
+      scp -o IdentitiesOnly=yes -o StrictHostKeyChecking=yes -o HostKeyAlias=devops-pet-vm -i "$SSH_PRIVATE_KEY" \
+        compose.deploy.yml goha46@"$DEPLOY_HOST":/home/goha46/compose.deploy.yml
+      scp -o IdentitiesOnly=yes -o StrictHostKeyChecking=yes -o HostKeyAlias=devops-pet-vm -i "$SSH_PRIVATE_KEY" \
+        monitoring/prometheus.yml goha46@"$DEPLOY_HOST":/home/goha46/monitoring/prometheus.yml
       ssh -o IdentitiesOnly=yes -o StrictHostKeyChecking=yes -o HostKeyAlias=devops-pet-vm -i "$SSH_PRIVATE_KEY" goha46@"$DEPLOY_HOST" "
         set -e
         cd /home/goha46

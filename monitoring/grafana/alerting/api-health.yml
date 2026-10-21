@@ -2,7 +2,7 @@ apiVersion: 1
 groups:
     - orgId: 1
       name: api-health
-      folder: DevOps Pet Project
+      folder: Dev Ops Pet
       interval: 1m
       rules:
         - uid: fg1u45e3153wgc
@@ -13,7 +13,7 @@ groups:
               relativeTimeRange:
                 from: 600
                 to: 0
-              datasourceUid: cg1tzrvfkybr4c
+              datasourceUid: cg1wo4ulc4kcgf
               model:
                 editorMode: code
                 expr: up{job="fastapi"}

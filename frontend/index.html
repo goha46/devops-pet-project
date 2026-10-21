@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Посты · DevOps Pet</title>
+    <link rel="stylesheet" href="style.css" />
+    <script src="app.js" defer></script>
+  </head>
+  <body>
+    <main class="page">
+      <header class="page-header">
+        <p class="eyebrow">DevOps Pet Project</p>
+        <h1>Посты</h1>
+      </header>
+
+      <section class="card" aria-labelledby="new-post-title">
+        <h2 id="new-post-title">Новый пост</h2>
+        <form id="post-form">
+          <label for="title">Заголовок</label>
+          <input id="title" name="title" maxlength="255" required />
+
+          <label for="content">Текст</label>
+          <textarea id="content" name="content" rows="5" required></textarea>
+
+          <button id="submit-button" type="submit">Опубликовать</button>
+        </form>
+      </section>
+
+      <section class="posts-section" aria-labelledby="posts-title">
+        <div class="posts-heading">
+          <h2 id="posts-title">Последние посты</h2>
+          <button id="reload-button" class="secondary" type="button">Обновить</button>
+        </div>
+        <p id="message" role="status" aria-live="polite"></p>
+        <div id="posts" class="posts"></div>
+      </section>
+    </main>
+  </body>
+</html>

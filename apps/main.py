@@ -3,9 +3,11 @@ import re
 import subprocess
 import time
 from contextlib import asynccontextmanager
+from pathlib import Path
 from typing import Annotated
 
 from fastapi import FastAPI, HTTPException, Query
+from fastapi.staticfiles import StaticFiles
 from prometheus_fastapi_instrumentator import Instrumentator
 from sqlalchemy.orm import Session
 
@@ -41,6 +43,11 @@ app = FastAPI(lifespan=lifespan)
 app.state.app_version = get_app_version()
 
 Instrumentator().instrument(app).expose(app)
+app.mount(
+    "/ui",
+    StaticFiles(directory=Path(__file__).resolve().parent.parent / "frontend", html=True),
+    name="ui",
+)
 
 
 @app.get("/")

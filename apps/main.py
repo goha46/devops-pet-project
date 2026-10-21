@@ -42,6 +42,7 @@ app.state.app_version = get_app_version()
 
 Instrumentator().instrument(app).expose(app)
 
+
 @app.get("/")
 async def read_root():
     start = time.perf_counter()

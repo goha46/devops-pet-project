@@ -54,6 +54,13 @@ services:
     restart: always
     ports:
       - "127.0.0.1:3000:3000"
+    environment:
+      GF_SMTP_ENABLED: "true"
+      GF_SMTP_HOST: smtp.gmail.com:465
+      GF_SMTP_USER: ${GMAIL_ADDRESS:?Укажи GMAIL_ADDRESS}
+      GF_SMTP_PASSWORD: ${GMAIL_APP_PASSWORD:?Укажи GMAIL_APP_PASSWORD}
+      GF_SMTP_FROM_ADDRESS: ${GMAIL_ADDRESS:?Укажи GMAIL_ADDRESS}
+      GF_SMTP_FROM_NAME: DevOps Pet Grafana
     volumes:
       - grafana_data:/var/lib/grafana
       - ./monitoring/grafana/alerting:/etc/grafana/provisioning/alerting:ro

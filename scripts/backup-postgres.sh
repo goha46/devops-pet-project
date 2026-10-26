@@ -26,3 +26,12 @@ rclone delete backup_crypt: \
 # Удаляем локальные копии старше 7 суток.
 find "$BACKUP_DIR" -maxdepth 1 -type f \
   -name 'app_db_*.dump' -mmin +10080 -delete
+
+METRICS_DIR="$HOME/monitoring/textfile"
+METRICS_TMP="$(mktemp "$METRICS_DIR/postgres_backup.XXXXXX")"
+
+printf 'postgres_backup_last_success_timestamp_seconds %s\n' \
+  "$(date +%s)" > "$METRICS_TMP"
+
+chmod 644 "$METRICS_TMP"
+mv "$METRICS_TMP" "$METRICS_DIR/postgres_backup.prom"

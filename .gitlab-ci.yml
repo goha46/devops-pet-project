@@ -72,7 +72,7 @@ deploy:
         cd /home/goha46
         sed -i 's/^IMAGE_TAG=.*/IMAGE_TAG=$CI_COMMIT_SHA/' .env
         for attempt in 1 2 3; do
-          if sudo -n docker compose -f compose.deploy.yml pull app; then
+          if sudo -n docker compose -f compose.deploy.yml pull app node-exporter; then
             break
           fi
 

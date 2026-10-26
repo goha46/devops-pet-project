@@ -48,6 +48,16 @@ services:
     volumes:
       - ./monitoring/prometheus.yml:/etc/prometheus/prometheus.yml:ro
       - promdata:/prometheus
+  node-exporter:
+    image: prom/node-exporter:v1.9.1
+    restart: always
+    pid: host
+    command:
+      - --path.rootfs=/host
+      - --collector.textfile.directory=/textfile
+    volumes:
+      - /:/host:ro,rslave
+      - ./monitoring/textfile:/textfile:ro
 
   grafana:
     image: grafana/grafana:13.2.4

@@ -66,7 +66,7 @@ deploy:
       scp -o IdentitiesOnly=yes -o StrictHostKeyChecking=yes -o HostKeyAlias=devops-pet-vm -i "$SSH_PRIVATE_KEY" \
         monitoring/prometheus.yml goha46@"$DEPLOY_HOST":/home/goha46/monitoring/prometheus.yml
       scp -o IdentitiesOnly=yes -o StrictHostKeyChecking=yes -o HostKeyAlias=devops-pet-vm -i "$SSH_PRIVATE_KEY" \
-        monitoring/grafana/alerting/api-health.yml goha46@"$DEPLOY_HOST":/home/goha46/monitoring/grafana/alerting/api-health.yml
+        monitoring/grafana/alerting/api-health.yml monitoring/grafana/alerting/backup-health.yml goha46@"$DEPLOY_HOST":/home/goha46/monitoring/grafana/alerting/
       ssh -o IdentitiesOnly=yes -o StrictHostKeyChecking=yes -o HostKeyAlias=devops-pet-vm -i "$SSH_PRIVATE_KEY" goha46@"$DEPLOY_HOST" "
         set -e
         cd /home/goha46

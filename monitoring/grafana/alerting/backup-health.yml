@@ -1,0 +1,66 @@
+apiVersion: 1
+groups:
+    - orgId: 1
+      name: backup-health
+      folder: Dev Ops Pet
+      interval: 5m
+      rules:
+        - uid: dg2foqhd3ta80f
+          title: Резервная копия устарела
+          condition: C
+          data:
+            - refId: A
+              relativeTimeRange:
+                from: 600
+                to: 0
+              datasourceUid: cg1wo4ulc4kcgf
+              model:
+                editorMode: code
+                expr: "time() - \npostgres_backup_last_success_timestamp_seconds{job=\"node\"}"
+                instant: true
+                intervalMs: 1000
+                legendFormat: __auto
+                maxDataPoints: 43200
+                range: false
+                refId: A
+            - refId: C
+              queryType: expression
+              datasourceUid: __expr__
+              model:
+                conditions:
+                    - evaluator:
+                        params:
+                            - 93600
+                        type: gt
+                      operator:
+                        type: and
+                      query:
+                        params:
+                            - C
+                      reducer:
+                        params: []
+                        type: last
+                      type: query
+                datasource:
+                    type: __expr__
+                    uid: __expr__
+                expression: A
+                intervalMs: 1000
+                maxDataPoints: 43200
+                refId: C
+                type: threshold
+          noDataState: Alerting
+          execErrState: Alerting
+          for: 5m
+          annotations:
+            description: |-
+                Проверь backup-postgres.timer и журнал:
+                sudo journalctl -u backup-postgres.service -n 50 --no-pager
+
+                Проверь доступ к облачным копиям:
+                rclone lsf backup_crypt:
+            summary: Резервная копия PostgreSQL старше 26 часов либо её метрика недоступна.
+          labels: {}
+          isPaused: false
+          notification_settings:
+            receiver: Egor Ilin

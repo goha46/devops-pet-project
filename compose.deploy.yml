@@ -90,3 +90,4 @@ volumes:
   pgdata:
   promdata:
   grafana_data:
+  nginx:

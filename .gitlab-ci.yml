@@ -60,9 +60,11 @@ deploy:
     - |
       set -e
       ssh -o IdentitiesOnly=yes -o StrictHostKeyChecking=yes -o HostKeyAlias=devops-pet-vm -i "$SSH_PRIVATE_KEY" goha46@"$DEPLOY_HOST" \
-        "mkdir -p /home/goha46/monitoring/grafana/alerting"
+        "mkdir -p /home/goha46/monitoring/grafana/alerting /home/goha46/nginx"
       scp -o IdentitiesOnly=yes -o StrictHostKeyChecking=yes -o HostKeyAlias=devops-pet-vm -i "$SSH_PRIVATE_KEY" \
         compose.deploy.yml goha46@"$DEPLOY_HOST":/home/goha46/compose.deploy.yml
+      scp -o IdentitiesOnly=yes -o StrictHostKeyChecking=yes -o HostKeyAlias=devops-pet-vm -i "$SSH_PRIVATE_KEY" \
+        nginx/default.conf goha46@"$DEPLOY_HOST":/home/goha46/nginx/default.conf
       scp -o IdentitiesOnly=yes -o StrictHostKeyChecking=yes -o HostKeyAlias=devops-pet-vm -i "$SSH_PRIVATE_KEY" \
         monitoring/prometheus.yml goha46@"$DEPLOY_HOST":/home/goha46/monitoring/prometheus.yml
       scp -o IdentitiesOnly=yes -o StrictHostKeyChecking=yes -o HostKeyAlias=devops-pet-vm -i "$SSH_PRIVATE_KEY" \
@@ -72,7 +74,7 @@ deploy:
         cd /home/goha46
         sed -i 's/^IMAGE_TAG=.*/IMAGE_TAG=$CI_COMMIT_SHA/' .env
         for attempt in 1 2 3; do
-          if sudo -n docker compose -f compose.deploy.yml pull app node-exporter; then
+          if sudo -n docker compose -f compose.deploy.yml pull app node-exporter nginx; then
             break
           fi
 

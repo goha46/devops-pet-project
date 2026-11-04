@@ -60,7 +60,7 @@ deploy:
     - |
       set -e
       ssh -o IdentitiesOnly=yes -o StrictHostKeyChecking=yes -o HostKeyAlias=devops-pet-vm -i "$SSH_PRIVATE_KEY" goha46@"$DEPLOY_HOST" \
-        "mkdir -p /home/goha46/monitoring/grafana/alerting /home/goha46/nginx"
+        "mkdir -p /home/goha46/monitoring/grafana/alerting /home/goha46/nginx /home/goha46/nginx/acme/.well-known/acme-challenge"
       scp -o IdentitiesOnly=yes -o StrictHostKeyChecking=yes -o HostKeyAlias=devops-pet-vm -i "$SSH_PRIVATE_KEY" \
         compose.deploy.yml goha46@"$DEPLOY_HOST":/home/goha46/compose.deploy.yml
       scp -o IdentitiesOnly=yes -o StrictHostKeyChecking=yes -o HostKeyAlias=devops-pet-vm -i "$SSH_PRIVATE_KEY" \

@@ -2,8 +2,6 @@ services:
   app:
     image: registry.gitlab.com/goha46/devops-pet-project:${IMAGE_TAG:?Укажи IMAGE_TAG}
     restart: always
-    ports:
-      - "8000:8003"
     depends_on:
       db:
         condition: service_healthy
